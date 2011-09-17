@@ -57,6 +57,7 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	 * @return      void
 	 */
 	public function sendCacheDebugHeader(array $parameters, tslib_fe $parent) {
+		
 		$cacheDebug = array ();
 		$cachingAllowed = FALSE;
 		if ($parent->cacheContentFlag) {
