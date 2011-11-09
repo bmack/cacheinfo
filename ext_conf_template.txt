@@ -1,0 +1,2 @@
+	# cat=basic; type=input; label=If set, the fe_user cookie is only set on sucessfull login
+setOnlyCookieForLogin = 1
