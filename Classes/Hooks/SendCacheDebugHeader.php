@@ -61,83 +61,86 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 		$cacheDebug = array ();
 		$cachingAllowed = FALSE;
 		if ($parent->cacheContentFlag) {
-			$cacheDebug [] = 'cacheContentFlag';
-		}
-		else {
-			$cacheDebug [] = 'noCacheContentFlag';
+			$cacheDebug[] = 'cacheContentFlag';
+		} else {
+			$cacheDebug[] = 'noCacheContentFlag';
 		}
 		
 		if ($parent->no_cache) {
-			$cacheDebug [] = '!no_cache!';
+			$cacheDebug[] = '!no_cache!';
 		}
 		
 		if ($parent->isStaticCacheble()) {
-			$cacheDebug [] = 'staticCacheable';
-		}
-		if ($parent->isClientCachable) {
-			$cachingAllowed = TRUE;
-			$cacheDebug [] = 'ClientCache';
-		}
-		else {
-			$cacheDebug [] = 'noClientCache';
-		}
-		if ($parent->isUserOrGroupSet()) {
-			$cacheDebug [] = 'userOrGroupSet';
-		}
-		if ($parent->isINTincScript ()) {
-			$cachingAllowed = FALSE;
-			$cacheDebug [] = '_INT';
-			$cacheDebug = array_merge ( $cacheDebug, $this->getIntScriptsDescription ( $parent->config ['INTincScript'] ) );
-		}
-		if ($parent->isEXTincScript ()) {
-			$cachingAllowed = FALSE;
-			$cacheDebug [] = '_EXT';
+			$cacheDebug[] = 'staticCacheable';
 		}
 
-		
+		if ($parent->isClientCachable) {
+			$cachingAllowed = TRUE;
+			$cacheDebug[] = 'ClientCache';
+		} else {
+			$cacheDebug[] = 'noClientCache';
+		}
+
+		if ($parent->isUserOrGroupSet()) {
+			$cacheDebug[] = 'userOrGroupSet';
+		}
+
+		if ($parent->isINTincScript()) {
+			$cachingAllowed = FALSE;
+			$cacheDebug[] = '_INT';
+			$cacheDebug = array_merge($cacheDebug, $this->getIntScriptsDescription($parent->config['INTincScript']));
+		}
+
+		if ($parent->isEXTincScript()) {
+			$cachingAllowed = FALSE;
+			$cacheDebug[] = '_EXT';
+		}
+
 		// @var tslib_feUserAuth
-		$frontEndUser = $GLOBALS ['TSFE']->fe_user;
+		$frontEndUser = $GLOBALS['TSFE']->fe_user;
 		
 		// ->loginSessionStarted
 		// ->dontSetCookie
 		// ->user
 		
-
-		if ($this->isFrontendUserActive ( $frontEndUser )) {
-			$cacheDebug [] = 'loggedin';
+		if ($this->isFrontendUserActive($frontEndUser)) {
+			$cacheDebug[] = 'loggedin';
 			$cachingAllowed = FALSE;
 		} else {
-			$cacheDebug [] = 'not_loggedin';
+			$cacheDebug[] = 'not_loggedin';
 		}
 		
-		if ($this->isFrontendUserLoggingIn ( $frontEndUser )) {
-			$cacheDebug [] = 'loggingin';
+		if ($this->isFrontendUserLoggingIn($frontEndUser)) {
+			$cacheDebug[] = 'loggingin';
 		}
-		if ($this->isFrontendUserLoggingOut ( $frontEndUser )) {
-			$cacheDebug [] = 'loggingout';
+		if ($this->isFrontendUserLoggingOut($frontEndUser)) {
+			$cacheDebug[] = 'loggingout';
 		}
 		
 		if (count ( $cacheDebug )) {
-			header ( self::HTTP_Debug_HeaderKey . ': ' . implode ( ',', $cacheDebug ) );
+			header(self::HTTP_Debug_HeaderKey . ': ' . implode(',', $cacheDebug));
 		}
 		
-		if (($this->isFrontendUserLoggingIn ( $frontEndUser )) && $this->isFrontendUserActive ( $frontEndUser )) {
+		if (($this->isFrontendUserLoggingIn($frontEndUser)) && $this->isFrontendUserActive($frontEndUser)) {
 			// user just logged in, pass through varnish, do not discard cookies
-			header ( self::HTTP_TYPO3UserCookie_HeaderKey . ': 1' );
+			header(self::HTTP_TYPO3UserCookie_HeaderKey . ': 1' );
 		}
 		
 		if ($cachingAllowed) {
-			header ( self::HTTP_Cacheallowed_HeaderKey . ': 1' );
+			header(self::HTTP_Cacheallowed_HeaderKey . ': 1' );
 		}
 	
 	}
+
 	/**
+	 * getIntScriptsDescription
+	 *
 	 * @return array with "speaking" description of user ints
 	 * @param array
 	 */
 	private function getIntScriptsDescription(array $scriptsConfig) {
 		$ints = array ();
-		foreach ( $scriptsConfig as $key => $confs ) {			
+		foreach ( $scriptsConfig as $key => $confs ) {
 			foreach ( $confs ['conf'] as $confKey => $typoScriptConfiguration ) {
 				if ($confKey == 'userFunc' && is_string ( $typoScriptConfiguration )) {
 					$ints [] = $typoScriptConfiguration;
@@ -153,36 +156,38 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	/**
 	 * Determines whether a valid frontend user session is currently active.
 	 *
-	 * @return      boolean
+	 * @param tslib_feUserAuth $frontendUser
+	 * @return boolean
 	 */
 	protected function isFrontendUserActive($frontendUser) {
-		if (isset ( $frontendUser->user ['uid'] ) && $frontendUser->user ['uid']) {
+		if (isset($frontendUser->user['uid']) && $frontendUser->user['uid']) {
 			return true;
 		}
 		return false;
 	}
+
 	/**
 	 * Determines whether a frontend user currently tries to log in.
 	 *
-	 * @param       Tx_Extracache_System_Event_Events_EventOnStaticCacheRequest $event
+	 * @param       $frontEndUser
 	 * @return      boolean
 	 * @deprecated Not used anymore
 	 */
 	protected function isFrontendUserLoggingIn($frontEndUser) {
-		$loginData = $frontEndUser->getLoginFormData ();
-		return (isset ( $loginData ['uident'] ) && $loginData ['uident'] && $loginData ['status'] === 'login');
+		$loginData = $frontEndUser->getLoginFormData();
+		return (isset($loginData['uident']) && $loginData['uident'] && $loginData['status'] === 'login');
 	}
 	
 	/**
 	 * Determines whether a frontend user currently tries to log out.
 	 *
-	 * @param       Tx_Extracache_System_Event_Events_EventOnStaticCacheRequest $event
+	 * @param       $frontEndUser
 	 * @return      boolean
 	 * @deprecated Not used anymore
 	 */
 	protected function isFrontendUserLoggingOut($frontEndUser) {
-		$loginData = $frontEndUser->getLoginFormData ();
-		return (isset ( $loginData ['status'] ) && $loginData ['status'] == 'logout');
+		$loginData = $frontEndUser->getLoginFormData();
+		return (isset($loginData['status']) && $loginData['status'] == 'logout');
 	}
 
 }
