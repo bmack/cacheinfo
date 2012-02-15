@@ -132,9 +132,6 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 			header(self::HTTP_Cacheallowed_HeaderKey . ': 1' );
 		}
 
-		if (is_array($GLOBALS['TSFE']->pageCacheTags) && count($GLOBALS['TSFE']->pageCacheTags) > 0) {
-			header(self::HTTP_CacheTags_HeaderKey. ': ' . implode(',', $GLOBALS['TSFE']->pageCacheTags));
-		}
 	}
 
 	/**
