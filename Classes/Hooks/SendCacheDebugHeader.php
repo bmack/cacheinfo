@@ -48,6 +48,8 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	const HTTP_Cacheallowed_HeaderKey = 'X-T3Cache';
 	
 	const HTTP_TYPO3UserCookie_HeaderKey = 'X-T3SetCookie';
+
+	const HTTP_CacheTags_HeaderKey = 'X-T3CacheTags';
 	
 	/**
 	 * Sends HTTP headers for debuging caching situations. 
@@ -57,7 +59,7 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	 * @return      void
 	 */
 	public function sendCacheDebugHeader(array $parameters, tslib_fe $parent) {
-		
+
 		$cacheDebug = array ();
 		$cachingAllowed = FALSE;
 		if ($parent->cacheContentFlag) {
@@ -116,11 +118,11 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 		if ($this->isFrontendUserLoggingOut($frontEndUser)) {
 			$cacheDebug[] = 'loggingout';
 		}
-		
-		if (count ( $cacheDebug )) {
+
+		if (count($cacheDebug)) {
 			header(self::HTTP_Debug_HeaderKey . ': ' . implode(',', $cacheDebug));
 		}
-		
+
 		if (($this->isFrontendUserLoggingIn($frontEndUser)) && $this->isFrontendUserActive($frontEndUser)) {
 			// user just logged in, pass through varnish, do not discard cookies
 			header(self::HTTP_TYPO3UserCookie_HeaderKey . ': 1' );
@@ -129,7 +131,10 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 		if ($cachingAllowed) {
 			header(self::HTTP_Cacheallowed_HeaderKey . ': 1' );
 		}
-	
+
+		if (is_array($GLOBALS['TSFE']->pageCacheTags) && count($GLOBALS['TSFE']->pageCacheTags) > 0) {
+			header(self::HTTP_CacheTags_HeaderKey. ': ' . implode(',', $GLOBALS['TSFE']->pageCacheTags));
+		}
 	}
 
 	/**
