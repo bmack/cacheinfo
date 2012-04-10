@@ -41,16 +41,25 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	 * @var unknown_type
 	 */
 	const HTTP_Debug_HeaderKey = 'X-T3CacheInfo';
+
 	/**
 	 * cookie used to tell proxys that they can cache
 	 * @var unknown_type
 	 */
 	const HTTP_Cacheallowed_HeaderKey = 'X-T3Cache';
-	
+
+	/**
+	 * Tell the proxy that a cookie is set by the current request
+	 * @var unknown_type
+	 */
 	const HTTP_TYPO3UserCookie_HeaderKey = 'X-T3SetCookie';
 
+	/**
+	 * TODO: description
+	 * @var unknown_type
+	 */
 	const HTTP_CacheTags_HeaderKey = 'X-T3CacheTags';
-	
+
 	/**
 	 * Sends HTTP headers for debuging caching situations. 
 	 *
@@ -67,11 +76,11 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 		} else {
 			$cacheDebug[] = 'noCacheContentFlag';
 		}
-		
+
 		if ($parent->no_cache) {
 			$cacheDebug[] = '!no_cache!';
 		}
-		
+
 		if ($parent->isStaticCacheble()) {
 			$cacheDebug[] = 'staticCacheable';
 		}
@@ -100,18 +109,18 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 
 		// @var tslib_feUserAuth
 		$frontEndUser = $GLOBALS['TSFE']->fe_user;
-		
+
 		// ->loginSessionStarted
 		// ->dontSetCookie
 		// ->user
-		
+
 		if ($this->isFrontendUserActive($frontEndUser)) {
 			$cacheDebug[] = 'loggedin';
 			$cachingAllowed = FALSE;
 		} else {
 			$cacheDebug[] = 'not_loggedin';
 		}
-		
+
 		if ($this->isFrontendUserLoggingIn($frontEndUser)) {
 			$cacheDebug[] = 'loggingin';
 		}
@@ -127,11 +136,10 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 			// user just logged in, pass through varnish, do not discard cookies
 			header(self::HTTP_TYPO3UserCookie_HeaderKey . ': 1' );
 		}
-		
+
 		if ($cachingAllowed) {
 			header(self::HTTP_Cacheallowed_HeaderKey . ': 1' );
 		}
-
 	}
 
 	/**
@@ -154,7 +162,7 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 		}
 		return $ints;
 	}
-	
+
 	/**
 	 * Determines whether a valid frontend user session is currently active.
 	 *
@@ -179,7 +187,7 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 		$loginData = $frontEndUser->getLoginFormData();
 		return (isset($loginData['uident']) && $loginData['uident'] && $loginData['status'] === 'login');
 	}
-	
+
 	/**
 	 * Determines whether a frontend user currently tries to log out.
 	 *
@@ -191,6 +199,5 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 		$loginData = $frontEndUser->getLoginFormData();
 		return (isset($loginData['status']) && $loginData['status'] == 'logout');
 	}
-
 }
 
