@@ -77,6 +77,13 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 			$cacheDebug[] = 'noCacheContentFlag';
 		}
 
+		// Notify about the state of pages.fe_login_mode
+		if ($parent->loginAllowedInBranch) {
+			$cacheDebug[] = 'loginAllowedInBranch';
+		} else {
+			$cacheDebug[] = 'noLoginAllowedInBranch';
+		}
+
 		if ($parent->no_cache) {
 			$cacheDebug[] = '!no_cache!';
 		}
