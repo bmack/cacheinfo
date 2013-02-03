@@ -135,6 +135,11 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 			$cacheDebug[] = 'loggingout';
 		}
 
+		if (isset($parent->pageCacheTags) && is_array($parent->pageCacheTags)) {
+			header('X-CacheTags: |'.implode('|', $parent->pageCacheTags).'|');
+		}
+
+
 		if (count($cacheDebug)) {
 			header(self::HTTP_Debug_HeaderKey . ': ' . implode(',', $cacheDebug));
 		}
