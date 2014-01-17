@@ -1,6 +1,6 @@
 <?php
 
-$conf = unserialize ($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cacheinfo']);
+$conf = unserialize($TYPO3_CONF_VARS['EXT']['extConf']['cacheinfo']);
 
 // we don't wantt set the fe_user cookie by default
 if (isset($conf['setOnlyCookieForLogin']) && $conf['setOnlyCookieForLogin'] == 1) {

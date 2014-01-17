@@ -1,2 +1,2 @@
-	# cat=basic; type=input; label=If set, the fe_user cookie is only set on sucessful login
+	# cat=basic; type=boolean; label=If set, the fe_user cookie is only sent on successful login
 setOnlyCookieForLogin = 1
