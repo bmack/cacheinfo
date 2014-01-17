@@ -25,7 +25,7 @@ namespace AOE\Cacheinfo\Hooks;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Documentation\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class that sends the TYPO3 feuser cookie - only if a login was successful
