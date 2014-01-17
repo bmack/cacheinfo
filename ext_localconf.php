@@ -1,9 +1,13 @@
 <?php
 
-$conf = unserialize($TYPO3_CONF_VARS['EXT']['extConf']['cacheinfo']);
+if (!defined ('TYPO3_MODE')) {
+	die('Access denied.');
+}
 
-// we don't wantt set the fe_user cookie by default
-if (isset($conf['setOnlyCookieForLogin']) && $conf['setOnlyCookieForLogin'] == 1) {
+$extensionConfiguration = unserialize($TYPO3_CONF_VARS['EXT']['extConf']['cacheinfo']);
+
+// we don't want set the fe_user cookie by default
+if (!is_array($extensionConfiguration) || !empty($extensionConfiguration['setOnlyCookieForLogin'])) {
 	$TYPO3_CONF_VARS['FE']['dontSetCookie'] = TRUE;
 }
 
