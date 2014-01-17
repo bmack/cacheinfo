@@ -2,10 +2,10 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Cacheinfo',
-	'description' => 'Adjust server responses and adds cache debug headers to make more pages cachable (e.g. varnish.)',
-	'category' => '',
+	'description' => 'Adjust server responses and adds cache debug headers to make more pages cachable (e.g. varnish or nginx)',
+	'category' => 'fe',
 	'shy' => 0,
-	'version' => '0.0.1',
+	'version' => '0.1.0',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
@@ -24,6 +24,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
+			'typo3' => '6.0.0-6.2.99'
 		),
 		'conflicts' => array(
 		),

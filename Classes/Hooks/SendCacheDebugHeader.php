@@ -1,5 +1,7 @@
 <?php
 
+namespace AOE\Cacheinfo\Hooks;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,41 +24,40 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
-
 /**
  * Hook class for TYPO3 - 
  * Sends HTTP headers for debuging caching situations *
- * Attention: this class-name must begin with 'tx' and NOT with 'Tx'...otherwise this hook will not work!
  *
  * @package cacheinfo
  * @subpackage Hooks
  * @author Oliver Hader
  * @author Thomas Schuster
  * @author Daniel Pötzinger
+ * @author Benjamin Mack
  */
-class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
+class SendCacheDebugHeader {
+
 	/**
 	 * cookies used for debug infos
-	 * @var unknown_type
+	 * @var \string
 	 */
 	const HTTP_Debug_HeaderKey = 'X-T3CacheInfo';
 
 	/**
 	 * cookie used to tell proxys that they can cache
-	 * @var unknown_type
+	 * @var \string
 	 */
 	const HTTP_Cacheallowed_HeaderKey = 'X-T3Cache';
 
 	/**
 	 * Tell the proxy that a cookie is set by the current request
-	 * @var unknown_type
+	 * @var \string
 	 */
 	const HTTP_TYPO3UserCookie_HeaderKey = 'X-T3SetCookie';
 
 	/**
 	 * TODO: description
-	 * @var unknown_type
+	 * @var \string
 	 */
 	const HTTP_CacheTags_HeaderKey = 'X-T3CacheTags';
 
@@ -64,10 +65,10 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	 * Sends HTTP headers for debuging caching situations. 
 	 *
 	 * @param       array           $parameters Parameters delivered by the calling parent object (not used here)
-	 * @param       tslib_fe        $parent The calling parent object
+	 * @param       \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController        $parent The calling parent object
 	 * @return      void
 	 */
-	public function sendCacheDebugHeader(array $parameters, tslib_fe $parent) {
+	public function sendCacheDebugHeader(array $parameters, \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $parent) {
 
 		$cacheDebug = array ();
 		$cachingAllowed = FALSE;
@@ -114,7 +115,7 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 			$cacheDebug[] = '_EXT';
 		}
 
-		// @var tslib_feUserAuth
+		// @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
 		$frontEndUser = $GLOBALS['TSFE']->fe_user;
 
 		// ->loginSessionStarted
@@ -161,14 +162,14 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	 * @param array
 	 */
 	private function getIntScriptsDescription(array $scriptsConfig) {
-		$ints = array ();
-		foreach ( $scriptsConfig as $key => $confs ) {
-			foreach ( $confs ['conf'] as $confKey => $typoScriptConfiguration ) {
-				if ($confKey == 'userFunc' && is_string ( $typoScriptConfiguration )) {
-					$ints [] = $typoScriptConfiguration;
+		$ints = array();
+		foreach ($scriptsConfig as $confs) {
+			foreach ($confs['conf'] as $confKey => $typoScriptConfiguration) {
+				if ($confKey == 'userFunc' && is_string($typoScriptConfiguration)) {
+					$ints[] = $typoScriptConfiguration;
 				}
-				if (is_array ( $typoScriptConfiguration ) && isset ( $typoScriptConfiguration ['userFunc'] )) {
-					$ints [] = $typoScriptConfiguration ['userFunc'];
+				if (is_array($typoScriptConfiguration) && isset($typoScriptConfiguration['userFunc'])) {
+					$ints[] = $typoScriptConfiguration ['userFunc'];
 				}
 			}
 		}
@@ -178,14 +179,11 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	/**
 	 * Determines whether a valid frontend user session is currently active.
 	 *
-	 * @param tslib_feUserAuth $frontendUser
+	 * @param \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $frontendUser
 	 * @return boolean
 	 */
 	protected function isFrontendUserActive($frontendUser) {
-		if (isset($frontendUser->user['uid']) && $frontendUser->user['uid']) {
-			return true;
-		}
-		return false;
+		return (isset($frontendUser->user['uid']) && $frontendUser->user['uid']);
 	}
 
 	/**
@@ -193,7 +191,6 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	 *
 	 * @param       $frontEndUser
 	 * @return      boolean
-	 * @deprecated Not used anymore
 	 */
 	protected function isFrontendUserLoggingIn($frontEndUser) {
 		$loginData = $frontEndUser->getLoginFormData();
@@ -205,7 +202,6 @@ class tx_Cacheinfo_Hooks_SendCacheDebugHeader {
 	 *
 	 * @param       $frontEndUser
 	 * @return      boolean
-	 * @deprecated Not used anymore
 	 */
 	protected function isFrontendUserLoggingOut($frontEndUser) {
 		$loginData = $frontEndUser->getLoginFormData();
