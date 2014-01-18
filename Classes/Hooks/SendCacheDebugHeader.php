@@ -70,7 +70,7 @@ class SendCacheDebugHeader {
 	 */
 	public function sendCacheDebugHeader(array $parameters, \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $parent) {
 
-		$cacheDebug = array ();
+		$cacheDebug = array();
 		$cachingAllowed = FALSE;
 		if ($parent->cacheContentFlag) {
 			$cacheDebug[] = 'cacheContentFlag';
