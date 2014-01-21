@@ -36,8 +36,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Benjamin Mack
  */
 class Userauth {
+
+	/**
+	 * special function to call when an extension wants to 
+	 * persist the cookie data without login (e.g. cart)
+	 */
+	public function persistSession() {
+		$this->setSessionCookie($GLOBALS['TSFE']->fe_user);
+	}
 	
 	/**
+	 * hook to write the session cookie on login
+	 *
 	 * @param $content
 	 * @param \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication $parent
 	 * @return void

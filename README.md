@@ -23,7 +23,8 @@ and used. If you still need to use the FE session for users that
 are not logged in (e.g. in a basket functionality), you can use
 the following code in your extension:
 
-....
+  $hookObject = GeneralUtility::makeInstance('AOE\\Cacheinfo\\Hooks\\Userauth');
+  $hookObject->persistSession();
 
 Cookies sent with every frontend page request
 ---------------------------------------------
@@ -32,39 +33,39 @@ Cookies sent with every frontend page request
 This is a info header sent to inform about certain caching
 mechanisms:
 
-# cacheContentFlag / noCacheContentFlag
+#### cacheContentFlag / noCacheContentFlag
 Whether TSFE object has the cacheContentFlag set, meaning that
 the page content is cached within TYPO3.
   see $TSFE->cacheContentFlag
 
-# !no_cache!
+#### !no_cache!
 The frontend is delivered with the "no_cache" flag activated.
   see $TSFE->no_cache
 
-# staticCacheable
+#### staticCacheable
 The complete frontend page is static cacheable.
   see $TSFE->isStaticCacheble()
 
-# ClientCache/noClientCache
+#### ClientCache/noClientCache
 If set, then also the header X-T3-Cache is set if there are no
 _INT cObjects on the page and/or logged in.
   see $TSFE->isClientCachable
 
-# userOrGroupSet
+#### userOrGroupSet
 Set if a user is logged in or a group is set in the frontend.
  see $TSFE->isUserOrGroupSet()
 
-# _INT
+#### _INT
 keyword followed by all the *_INT objects used on this page.
 Helpful to identify what prevents fully cacheable pages.
   see $TSFE->isINTincScript() and $TSFE->config['INTincScript']
 The header "X-T3Cache" is not in this case.
 
-# _EXT
+#### _EXT
 Set if any external non-cacheable scripts are used on the page.
  see $TSFE->isEXTincScript()
 
-# loggedin / not_loggedin / loggingin / loggingout
+#### loggedin / not_loggedin / loggingin / loggingout
 whether a user is currently logged in/out.
 
 
