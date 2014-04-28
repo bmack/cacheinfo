@@ -61,10 +61,6 @@ Helpful to identify what prevents fully cacheable pages.
   see $TSFE->isINTincScript() and $TSFE->config['INTincScript']
 The header "X-T3Cache" is not in this case.
 
-#### _EXT
-Set if any external non-cacheable scripts are used on the page.
- see $TSFE->isEXTincScript()
-
 #### loggedin / not_loggedin / loggingin / loggingout
 whether a user is currently logged in/out.
 
