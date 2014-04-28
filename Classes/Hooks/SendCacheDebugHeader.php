@@ -110,11 +110,6 @@ class SendCacheDebugHeader {
 			$cacheDebug = array_merge($cacheDebug, $this->getIntScriptsDescription($parent->config['INTincScript']));
 		}
 
-		if ($parent->isEXTincScript()) {
-			$cachingAllowed = FALSE;
-			$cacheDebug[] = '_EXT';
-		}
-
 		// @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
 		$frontEndUser = $GLOBALS['TSFE']->fe_user;
 
