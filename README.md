@@ -1,30 +1,13 @@
 TYPO3 Extension: cacheinfo
 ==========================
 
-Cache Info is a small extension that has two purposes:
+Cache Info is a small extension that sends special cache
+headers when rendering a page request.
 
-1) Allows to set the FE User session to be sent only when the cookie
-is used. Otherwise no cookie is sent, which makes it easier to use
-load-balancing and proxy caching.
-
-2) Sends special cache headers when rendering a page request.
 This way, proxy caches know if they can cache a page.
 
 Additionally, there are some debugging headers sent in order to trace
 why TYPO3 does/does not cache a page.
-
-Disabling sending a FE session cookie by default
-------------------------------------------------
-Simply install the extension. Within the extension manager, the 
-extension allows for configuring this option. It is enabled by default.
-
-As soon as a frontend user logs into TYPO3, the cookie is sent,
-and used. If you still need to use the FE session for users that
-are not logged in (e.g. in a basket functionality), you can use
-the following code in your extension:
-
-  $hookObject = GeneralUtility::makeInstance('AOE\\Cacheinfo\\Hooks\\Userauth');
-  $hookObject->persistSession();
 
 Cookies sent with every frontend page request
 ---------------------------------------------

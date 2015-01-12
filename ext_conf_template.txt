@@ -1,2 +1,0 @@
-	# cat=basic; type=boolean; label=If set, the fe_user cookie is only sent on successful login
-setOnlyCookieForLogin = 1
