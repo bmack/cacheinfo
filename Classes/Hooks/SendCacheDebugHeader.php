@@ -110,29 +110,29 @@ class SendCacheDebugHeader {
 			$cacheDebug = array_merge($cacheDebug, $this->getIntScriptsDescription($parent->config['INTincScript']));
 		}
 
-		// @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
-		$frontEndUser = $GLOBALS['TSFE']->fe_user;
+		/** @var $frontendUser \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication */
+		$frontendUser = $GLOBALS['TSFE']->fe_user;
 
 		// ->loginSessionStarted
 		// ->dontSetCookie
 		// ->user
 
-		if ($this->isFrontendUserActive($frontEndUser)) {
+		if ($this->isFrontendUserActive($frontendUser)) {
 			$cacheDebug[] = 'loggedin';
 			$cachingAllowed = FALSE;
 		} else {
 			$cacheDebug[] = 'not_loggedin';
 		}
 
-		if ($this->isFrontendUserLoggingIn($frontEndUser)) {
+		if ($this->isFrontendUserLoggingIn($frontendUser)) {
 			$cacheDebug[] = 'loggingin';
 		}
-		if ($this->isFrontendUserLoggingOut($frontEndUser)) {
+		if ($this->isFrontendUserLoggingOut($frontendUser)) {
 			$cacheDebug[] = 'loggingout';
 		}
 
 		if (isset($parent->pageCacheTags) && is_array($parent->pageCacheTags)) {
-			header('X-CacheTags: |'.implode('|', $parent->pageCacheTags).'|');
+			header('X-CacheTags: |' . implode('|', $parent->pageCacheTags) . '|');
 		}
 
 
@@ -140,7 +140,7 @@ class SendCacheDebugHeader {
 			header(self::HTTP_Debug_HeaderKey . ': ' . implode(',', $cacheDebug));
 		}
 
-		if (($this->isFrontendUserLoggingIn($frontEndUser)) && $this->isFrontendUserActive($frontEndUser)) {
+		if (($this->isFrontendUserLoggingIn($frontendUser)) && $this->isFrontendUserActive($frontendUser)) {
 			// user just logged in, pass through varnish, do not discard cookies
 			header(self::HTTP_TYPO3UserCookie_HeaderKey . ': 1' );
 		}
@@ -161,10 +161,12 @@ class SendCacheDebugHeader {
 		foreach ($scriptsConfig as $confs) {
 			foreach ($confs['conf'] as $confKey => $typoScriptConfiguration) {
 				if ($confKey == 'userFunc' && is_string($typoScriptConfiguration)) {
+					if (ltrim($typoScriptConfiguration, '\\') === 'TYPO3\\CMS\\Extbase\\Core\\Bootstrap->run') {
+						$typoScriptConfiguration = 'Extbase-' . $confs['conf']['extensionName'] . '-' . $confs['conf']['pluginName'];
+					}
 					$ints[] = $typoScriptConfiguration;
-				}
-				if (is_array($typoScriptConfiguration) && isset($typoScriptConfiguration['userFunc'])) {
-					$ints[] = $typoScriptConfiguration ['userFunc'];
+				} elseif (is_array($typoScriptConfiguration) && isset($typoScriptConfiguration['userFunc'])) {
+					$ints[] = $typoScriptConfiguration['userFunc'];
 				}
 			}
 		}
@@ -184,22 +186,22 @@ class SendCacheDebugHeader {
 	/**
 	 * Determines whether a frontend user currently tries to log in.
 	 *
-	 * @param       $frontEndUser
+	 * @param       $frontendUser
 	 * @return      boolean
 	 */
-	protected function isFrontendUserLoggingIn($frontEndUser) {
-		$loginData = $frontEndUser->getLoginFormData();
+	protected function isFrontendUserLoggingIn($frontendUser) {
+		$loginData = $frontendUser->getLoginFormData();
 		return (isset($loginData['uident']) && $loginData['uident'] && $loginData['status'] === 'login');
 	}
 
 	/**
 	 * Determines whether a frontend user currently tries to log out.
 	 *
-	 * @param       $frontEndUser
+	 * @param       $frontendUser
 	 * @return      boolean
 	 */
-	protected function isFrontendUserLoggingOut($frontEndUser) {
-		$loginData = $frontEndUser->getLoginFormData();
+	protected function isFrontendUserLoggingOut($frontendUser) {
+		$loginData = $frontendUser->getLoginFormData();
 		return (isset($loginData['status']) && $loginData['status'] == 'logout');
 	}
 }
